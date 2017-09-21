@@ -4,10 +4,10 @@ from random import Random
 
 class Individual(object):
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self):
         self.rand = Random()
+        self.x = self.rand.random()
+        self.y = self.rand.random()
 
     def fitness_function(self):
         x = self.x
