@@ -6,14 +6,16 @@ class Individual(object):
 
     def __init__(self):
         self.rand = Random()
-        self.x = self.rand.random()
-        self.y = self.rand.random()
+        self.x = self.rand.uniform(-100000, 100000)
+        self.y = self.rand.uniform(-100000, 100000)
+        self.fitness = 0
 
     def fitness_function(self):
         x = self.x
         y = self.y
         n = 9
-        return pow(15*x*y*(1-x)*(1-y)*sin(n*pi*x)*sin(n*pi*y), 2)
+        self.fitness = pow(15*x*y*(1-x)*(1-y)*sin(n*pi*x)*sin(n*pi*y), 2)
+        return self.fitness
 
     def crossover(self, spouse):
         temp = self.x
