@@ -15,7 +15,6 @@ class Individual(object):
         y = self.y
         n = 9
         self.fitness = pow(15*x*y*(1-x)*(1-y)*sin(n*pi*x)*sin(n*pi*y), 2)
-        return self.fitness
 
     def crossover(self, spouse):
         temp = self.x
