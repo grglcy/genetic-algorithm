@@ -5,4 +5,4 @@ args = argparse.ArgumentParser()
 args.add_argument("pop", help="Population size", type=int)
 args = args.parse_args()
 
-pop = Population(10)
+pop = Population(args.pop)
