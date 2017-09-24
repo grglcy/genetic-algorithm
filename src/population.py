@@ -1,5 +1,7 @@
 from individual import Individual
+from random import Random
 
+rand = Random()
 
 class Population(object):
 
@@ -18,10 +20,10 @@ class Population(object):
             total += member.fitness
         return total
 
-    def roulette(self):
-        total = self.total_fitness()
+    def roulette(self, divisor=1):
+        total = self.total_fitness() / divisor
+        position = rand.uniform(0, total)
         for member in self.members:
-            total -= member.fitness
-            if total <= 0:
-                pass
-                # todo: add to crossover list
+            position -= member.fitness / divisor
+            if position <= 0:
+                return member
