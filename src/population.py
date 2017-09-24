@@ -3,6 +3,7 @@ from random import Random
 
 rand = Random()
 
+
 class Population(object):
 
     def __init__(self, size):
@@ -27,3 +28,7 @@ class Population(object):
             position -= member.fitness / divisor
             if position <= 0:
                 return member
+
+    def advance_generation(self):
+        crossover_members = []
+        crossover_members.append(self.roulette())
