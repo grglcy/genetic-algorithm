@@ -10,6 +10,10 @@ class Individual(object):
         self.y = self.rand.uniform(-100000, 100000)
         self.fitness = 0
 
+    def __str__(self):
+        return "x: %f\ty: %f\tfit: %f\n" %\
+               (self.x, self.y, self.fitness)
+
     def fitness_function(self):
         x = self.x
         y = self.y
