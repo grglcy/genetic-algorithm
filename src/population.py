@@ -18,7 +18,10 @@ class Population(object):
             return_string += "%d:\tx: %e\ty: %e\tfit: %e\n" %\
                              (position, member.x, member.y, member.fitness())
             position += 1
-        return_string += "Average fit:\t%e" % self.avg_fitness()
+        return_string += "Average fit:\t%e\n" % self.avg_fitness()
+        best = self.best_fitness()
+        return_string += "Best fit:\tx:%e,\ty:%e\tf:%e" %\
+                         (best.x, best.y, best.fitness())
         return return_string
 
     def fitness_function(self):
@@ -34,6 +37,14 @@ class Population(object):
     def avg_fitness(self):
         return float(self.total_fitness() / len(self.members))
 
+    def best_fitness(self):
+        best_member = self.members[0]
+
+        for member in self.members:
+            if float(member.fitness()) > best_member.fitness():
+                best_member = member
+        return best_member
+
     def roulette(self, divisor=1):
         total = self.total_fitness() / divisor
         position = rand.uniform(0, total)
@@ -42,6 +53,11 @@ class Population(object):
             position -= member.fitness() / divisor
             if position <= 0:
                 return member
+
+    def mutate(self, chance):
+        for member in self.members:
+            if rand.randint(0, 1/chance) == 0:
+                member.mutate()
 
     def advance_generation(self):
         self.fitness_function()
@@ -54,4 +70,5 @@ class Population(object):
             one, two = self.members[i].crossover(parents[i + 1])
             children.append(one)
             children.append(two)
+        self.mutate(0.1)
         self.members = children
