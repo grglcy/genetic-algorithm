@@ -7,8 +7,8 @@ rand = Random()
 class Individual(object):
 
     def __init__(self):
-        self.x = rand.uniform(-100000, 100000)
-        self.y = rand.uniform(-100000, 100000)
+        self.x = rand.uniform(-100, 100)
+        self.y = rand.uniform(-100, 100)
 
     @classmethod
     def from_params(cls, x, y):
@@ -34,6 +34,6 @@ class Individual(object):
 
     def mutate(self):
         if rand.randint(1, 10) % 2 == 0:
-            self.x = self.rand.random()
+            self.x = rand.random()
         else:
-            self.y = self.rand.random()
+            self.y = rand.random()
