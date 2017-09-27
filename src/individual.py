@@ -19,7 +19,7 @@ class Individual(object):
 
     def __str__(self):
         return "x: %f\ty: %f\tfit: %f\n" %\
-               (self.x, self.y, self.fitness)
+               (self.x, self.y, self.fitness())
 
     def fitness(self):
         x = self.x
@@ -33,6 +33,7 @@ class Individual(object):
         return one, two
 
     def mutate(self):
+        rand.randint(1, 10)
         if rand.randint(1, 10) % 2 == 0:
             self.x = self.get_rand_param()
         else:
