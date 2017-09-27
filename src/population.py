@@ -56,7 +56,7 @@ class Population(object):
 
     def mutate(self, chance):
         for member in self.members:
-            if rand.randint(0, 1/chance) == 0:
+            if rand.random() < chance/100:
                 member.mutate()
 
     def advance_generation(self):
@@ -70,5 +70,5 @@ class Population(object):
             one, two = self.members[i].crossover(parents[i + 1])
             children.append(one)
             children.append(two)
-        self.mutate(0.1)
         self.members = children
+        self.mutate(5)
