@@ -1,4 +1,4 @@
-from math import pow, sin, pi
+from math import pow, sin, pi, cos
 from random import Random
 
 rand = Random()
@@ -7,8 +7,8 @@ rand = Random()
 class Individual(object):
 
     def __init__(self):
-        self.x = rand.uniform(-100, 100)
-        self.y = rand.uniform(-100, 100)
+        self.x = self.get_rand_param()
+        self.y = self.get_rand_param()
 
     @classmethod
     def from_params(cls, x, y):
@@ -34,6 +34,10 @@ class Individual(object):
 
     def mutate(self):
         if rand.randint(1, 10) % 2 == 0:
-            self.x = rand.random()
+            self.x = self.get_rand_param()
         else:
-            self.y = rand.random()
+            self.y = self.get_rand_param()
+
+    @staticmethod
+    def get_rand_param():
+        return rand.uniform(0, 1)
