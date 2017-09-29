@@ -52,6 +52,7 @@ class Population(object):
         for member in self.members:
             position -= member.fitness() / divisor
             if position <= 0:
+                #print(member)
                 return member
 
     def mutate(self, chance):
@@ -60,6 +61,8 @@ class Population(object):
                 member.mutate()
 
     def advance_generation(self):
+        # todo: elitism
+        # todo: don't crossover all
         self.fitness_function()
         parents = list()
         for i in range(0, len(self.members)):
@@ -71,4 +74,4 @@ class Population(object):
             children.append(one)
             children.append(two)
         self.members = children
-        self.mutate(5)
+        self.mutate(2)

@@ -24,7 +24,8 @@ for i in range(0, args.iter):
     print("Epoch: %d " % i)
     pop.advance_generation()
     best = pop.best_fitness()
-    best_fit.append(pop.best_fitness().fitness())
+    best_fit.append(pop.avg_fitness())
+    #input("...")
     sleep(args.wait)
 
 plt.plot(best_fit)
