@@ -31,4 +31,4 @@ for i in range(0, args.iter):
 plt.plot(best_fit)
 plt.xlabel("Epoch")
 plt.ylabel("Fitness")
-plt.show()
+plt.savefig("fig.png")
