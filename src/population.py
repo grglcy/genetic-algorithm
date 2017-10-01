@@ -1,4 +1,4 @@
-from individual import Individual
+from individual import Individual, Flag
 from random import Random
 
 rand = Random()
@@ -24,14 +24,15 @@ class Population(object):
                          (best.x, best.y, best.fitness())
         return return_string
 
-    def fitness_function(self):
-        for member in self.members:
-            member.fitness()
-
-    def total_fitness(self):
+    def total_fitness(self, members=None):
         total = 0
-        for member in self.members:
+
+        if members is None:
+            members = self.members
+
+        for member in members:
             total += member.fitness()
+
         return total
 
     def avg_fitness(self):
@@ -45,33 +46,55 @@ class Population(object):
                 best_member = member
         return best_member
 
-    def roulette(self, divisor=1):
-        total = self.total_fitness() / divisor
+    def roulette(self, members=None):
+        total = self.total_fitness(members=members)
         position = rand.uniform(0, total)
 
-        for member in self.members:
-            position -= member.fitness() / divisor
+        if members is None:
+            members = self.members
+
+        for member in members:
+            position -= member.fitness()
             if position <= 0:
-                #print(member)
-                return member
+                return member.set_flag(Flag.PARENT)
 
     def mutate(self, chance):
         for member in self.members:
             if rand.random() < chance/100:
                 member.mutate()
 
-    def advance_generation(self):
-        # todo: elitism
-        # todo: don't crossover all
-        self.fitness_function()
-        parents = list()
-        for i in range(0, len(self.members)):
-            parents.append(self.roulette())
+    def elite(self, amount):
+        return sorted(self.members, key=lambda x: x.fitness(),
+                      reverse=True)[:amount]
 
-        children = list()
-        for i in range(0, len(parents) - 1, 2):
-            one, two = self.members[i].crossover(parents[i + 1])
-            children.append(one)
-            children.append(two)
-        self.members = children
+    def advance_generation(self, n_elite, n_crossover):
+
+        for member in self.members:
+            member.reset_flag()
+
+        # elitism
+        for member in self.elite(n_elite):
+            member.flag = Flag.ELITE
+
+        potential_parents = [member for member in self.members if member.flag
+                             is Flag.UNSET]
+        # parent
+        for ind in range(0, n_crossover):
+            while not self.roulette(members=potential_parents):
+                pass
+
+        # persist
+        [member.set_flag(Flag.PERSIST) for member in self.members
+         if member.flag is Flag.UNSET]
+
+        parents = [member for member in self.members if member.flag is
+                   Flag.PARENT]
+
+        for ind in range(0, len(parents), 2):
+            if ind is len(parents) - 1:
+                parents[ind].set_flag(Flag.PERSIST)
+            else:
+                parents[ind], parents[ind + 1] = parents[ind]\
+                    .crossover(parents[ind + 1])
+
         self.mutate(2)

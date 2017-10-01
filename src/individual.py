@@ -1,7 +1,15 @@
-from math import pow, sin, pi, cos
+from math import pow, sin, pi
 from random import Random
+from enum import Enum
 
 rand = Random()
+
+
+class Flag(Enum):
+    UNSET = 1,
+    PARENT = 2,
+    ELITE = 3,
+    PERSIST = 4
 
 
 class Individual(object):
@@ -9,6 +17,7 @@ class Individual(object):
     def __init__(self):
         self.x = self.get_rand_param()
         self.y = self.get_rand_param()
+        self.flag = Flag(Flag.UNSET)
 
     @classmethod
     def from_params(cls, x, y):
@@ -42,3 +51,13 @@ class Individual(object):
     @staticmethod
     def get_rand_param():
         return rand.uniform(0, 1)
+
+    def set_flag(self, flag):
+        if self.flag is Flag.UNSET:
+            self.flag = flag
+            return True
+        else:
+            return False
+
+    def reset_flag(self):
+        self.flag = Flag.UNSET
