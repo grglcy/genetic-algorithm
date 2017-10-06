@@ -56,7 +56,7 @@ class Population(object):
         for member in members:
             position -= member.fitness()
             if position <= 0:
-                return member.set_flag(Flag.PARENT)
+                return member
 
     def mutate(self, chance):
         for member in self.members:
@@ -64,37 +64,29 @@ class Population(object):
                 member.mutate()
 
     def elite(self, amount):
-        return sorted(self.members, key=lambda x: x.fitness(),
-                      reverse=True)[:amount]
+        sorted_members = sorted(self.members, key=lambda
+            x: x.fitness(), reverse=True)[:amount]
+
+        for member in sorted_members:
+            self.members.remove(member)
+
+        return sorted_members
 
     def advance_generation(self, n_elite, n_crossover):
-
-        for member in self.members:
-            member.reset_flag()
+        new_generation = list()
 
         # elitism
         for member in self.elite(n_elite):
-            member.flag = Flag.ELITE
+            new_generation.append(member)
 
-        potential_parents = [member for member in self.members if member.flag
-                             is Flag.UNSET]
         # parent
         for ind in range(0, n_crossover):
-            while not self.roulette(members=potential_parents):
-                pass
+            x, y = self.roulette().crossover(self.roulette())
+            self.members.append(x)
+            self.members.append(y)
 
         # persist
-        [member.set_flag(Flag.PERSIST) for member in self.members
+        [new_generation.append(member) for member in self.members
          if member.flag is Flag.UNSET]
-
-        parents = [member for member in self.members if member.flag is
-                   Flag.PARENT]
-
-        for ind in range(0, len(parents), 2):
-            if ind is len(parents) - 1:
-                parents[ind].set_flag(Flag.PERSIST)
-            else:
-                parents[ind], parents[ind + 1] = parents[ind]\
-                    .crossover(parents[ind + 1])
 
         self.mutate(2)
