@@ -1,4 +1,4 @@
-from individual import Individual, Flag
+from individual import Individual
 from random import Random
 
 rand = Random()
@@ -67,26 +67,29 @@ class Population(object):
         sorted_members = sorted(self.members, key=lambda
             x: x.fitness(), reverse=True)[:amount]
 
-        for member in sorted_members:
-            self.members.remove(member)
-
         return sorted_members
 
     def advance_generation(self, n_elite, n_crossover):
         new_generation = list()
 
         # elitism
-        for member in self.elite(n_elite):
-            new_generation.append(member)
+        #for member in self.elite(n_elite):
+            #new_generation.append(member)
 
         # parent
         for ind in range(0, n_crossover):
-            x, y = self.roulette().crossover(self.roulette())
-            self.members.append(x)
-            self.members.append(y)
+            parent_one = self.roulette()
+            parent_two = self.roulette()
+            x, y = parent_one.crossover(parent_two)
+            new_generation.append(x)
+            new_generation.append(y)
 
-        # persist
-        [new_generation.append(member) for member in self.members
-         if member.flag is Flag.UNSET]
+        while len(new_generation) < len(self.members):
+            new_generation.append(self.roulette())
+
+        self.members = new_generation
 
         self.mutate(2)
+
+    def remove_member(self, member):
+        self.members.remove(member)
