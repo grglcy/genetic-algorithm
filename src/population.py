@@ -39,6 +39,9 @@ class Population(object):
         return float(self.total_fitness() / len(self.members))
 
     def best_fitness(self):
+        return self.best_member().fitness()
+
+    def best_member(self):
         best_member = self.members[0]
 
         for member in self.members:
@@ -73,8 +76,8 @@ class Population(object):
         new_generation = list()
 
         # elitism
-        #for member in self.elite(n_elite):
-            #new_generation.append(member)
+        for member in self.elite(n_elite):
+            new_generation.append(member)
 
         # parent
         for ind in range(0, n_crossover):
@@ -89,7 +92,7 @@ class Population(object):
 
         self.members = new_generation
 
-        self.mutate(2)
+        self.mutate(20)
 
     def remove_member(self, member):
         self.members.remove(member)
