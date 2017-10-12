@@ -1,3 +1,6 @@
+# csv
+*.csv
+
 # ide
 .idea
 
