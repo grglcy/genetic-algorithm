@@ -68,7 +68,7 @@ class Population(object):
 
     def elite(self, amount):
         sorted_members = sorted(self.members, key=lambda
-            x: x.fitness(), reverse=True)[:amount]
+                                x: x.fitness(), reverse=True)[:amount]
 
         return sorted_members
 
@@ -92,7 +92,7 @@ class Population(object):
 
         self.members = new_generation
 
-        self.mutate(20)
+        self.mutate(10)
 
     def remove_member(self, member):
         self.members.remove(member)

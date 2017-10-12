@@ -12,15 +12,14 @@ class Lifecycle(object):
 
     def start(self):
         for epoch in range(0, self.params["iter"]):
-            elite = round(self.params["elite"] * self.params["population_size"])
-            crossover = round((self.params["crossover"]
-                               * self.params["population_size"]) / 2)
+            elite = self.params["elite"]
+            crossover = self.params["crossover"]
             self.population.advance_generation(elite, crossover)
             self.best_fit.append(self.population.best_fitness())
             self.average_fit.append(self.population.avg_fitness())
 
-    def best_member(self):
-        return self.population.best_member()
+    def best_fitness(self):
+        return self.population.best_fitness()
 
     def generate_graph(self, show=False, location=None):
         plt.plot(self.best_fit)
@@ -30,3 +29,8 @@ class Lifecycle(object):
             plt.show()
         if location is not None:
             plt.savefig(location)
+
+    def get_csv(self):
+        id = {'id': self.id}
+        best_fitness = {'best_fit': self.best_fitness()}
+        return {**id, **best_fitness, **self.params}
