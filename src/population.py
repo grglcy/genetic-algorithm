@@ -94,5 +94,11 @@ class Population(object):
 
         self.mutate(10)
 
+        self.check_termination()
+
     def remove_member(self, member):
         self.members.remove(member)
+
+    def check_termination(self):
+        # todo: complete
+        pass
