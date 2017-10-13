@@ -72,7 +72,7 @@ class Population(object):
 
         return sorted_members
 
-    def advance_generation(self, n_elite, n_crossover):
+    def advance_generation(self, n_elite, crossover_rate=0.5, n_arena=4):
         new_generation = list()
 
         # elitism
@@ -80,25 +80,37 @@ class Population(object):
             new_generation.append(member)
 
         # parent
-        for ind in range(0, n_crossover):
-            parent_one = self.roulette()
-            parent_two = self.roulette()
-            x, y = parent_one.crossover(parent_two)
-            new_generation.append(x)
-            new_generation.append(y)
+        # for ind in range(0, n_crossover):
+            # self.roulette_crossover(new_generation)
 
         while len(new_generation) < len(self.members):
-            new_generation.append(self.roulette())
+            if n_arena > 0:
+                x, y = self.tournament_selection(n_arena, crossover_rate)
+            else:
+                x, y = self.roulette_crossover()
+
+            new_generation.append(x)
+            new_generation.append(y)
 
         self.members = new_generation
 
         self.mutate(10)
 
-        self.check_termination()
-
     def remove_member(self, member):
         self.members.remove(member)
 
-    def check_termination(self):
-        # todo: complete
-        pass
+    def roulette_crossover(self):
+        parent_one = self.roulette()
+        parent_two = self.roulette()
+        return parent_one.crossover(parent_two)
+
+    def tournament_selection(self, arena_size, rate):
+        parents = list()
+        for i in range(arena_size):
+            parents.append(self.members[rand.randint(0, len(self.members) - 1)])
+        parents = sorted(parents, key=lambda x: x.fitness(), reverse=True)
+
+        if rand.random() < rate:
+            return parents[0].crossover(parents[1])
+        else:
+            return parents[0], parents[1]

@@ -33,8 +33,7 @@ class Individual(object):
         return one, two
 
     def mutate(self):
-        rand.randint(1, 10)
-        if rand.randint(1, 10) % 2 == 0:
+        if rand.random() < 0.5:
             self.x = self.get_rand_param()
         else:
             self.y = self.get_rand_param()
