@@ -1,4 +1,3 @@
-import os
 from multiprocessing import Process, Queue
 from lifecycle import Lifecycle
 from file import File
@@ -8,14 +7,16 @@ import time
 param_example = {'population_size': 10,
                  'elite': round(0.1 * 10),
                  'crossover': round(0.6 * 10),
+                 'mutation': 0,
                  'epochs': 1000,
                  'iter': 0}
 
 
-def gen_param(pop, elite, crossover, epochs):
+def gen_param(pop, elite, crossover, epochs, mutation=0):
     return {'population_size': pop,
-            'elite': round(elite * pop),
-            'crossover': round(crossover * pop),
+            'elite': round((elite / 100) * pop),
+            'crossover': round((crossover / 100) * pop),
+            'mutation': mutation,
             'epochs': epochs}
 
 
@@ -25,25 +26,23 @@ outputs = Queue()
 def run_instance(instance, output_list):
     instance.start()
     output_list.put(instance.get_csv())
+    instance.generate_graph(location="images/%d.png" % instance.id, show=False)
     print(instance.id)
 
 
-def cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
 output_file = File("output.csv", ['id', 'best_fit'] + list(param_example))
-
 output_file.write_header()
 
 instances = list()
+instance_id = 0
 
-id = 0
-
-for i in [x * 1 for x in range(0, 100)]:
-    instances.append(Process(name="Thread-%d" % i, target=run_instance,
-                             args=[Lifecycle(id, gen_param(50, 0, 0.5, 500)), outputs]))
-    id += 1
+for i in range(20, 90, 10):
+    for j in range(0, 3):
+        instances.append(
+            Process(name="Thread-%d" % i, target=run_instance,
+                    args=[Lifecycle(instance_id,
+                                    gen_param(50, j, i, 500, mutation=5)), outputs]))
+        instance_id += 1
 
 start_time = time.time()
 

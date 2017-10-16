@@ -16,14 +16,15 @@ class Lifecycle(object):
             self.iterations += 1
             elite = self.params["elite"]
             crossover = self.params["crossover"]
-            self.population.advance_generation(elite, crossover_rate=crossover, n_arena=4)
+            mutation = self.params["mutation"]
+            self.population.advance_generation(elite, crossover_rate=crossover,
+                                               n_arena=4, mutation=mutation)
             self.best_fit.append(self.population.best_fitness())
             self.average_fit.append(self.population.avg_fitness())
             if epoch > 50:
                 recent_best = self.best_fit[-50:]
                 if max(recent_best) - min(recent_best) < 0.02:
                     break
-
 
     def best_fitness(self):
         return self.population.best_fitness()
@@ -32,10 +33,18 @@ class Lifecycle(object):
         plt.plot(self.best_fit)
         plt.xlabel("Epoch")
         plt.ylabel("Best fitness")
+        plt.title(self.get_params())
         if show:
             plt.show()
         if location is not None:
             plt.savefig(location)
+
+    def get_params(self):
+        return_string = ("mutation: %d " % self.params['mutation'])
+        return_string += ("crossover: %d " % self.params['crossover'])
+        return_string += ("elite: %d " % self.params['elite'])
+        return_string += ("iter: %d" % self.iterations)
+        return return_string
 
     def get_csv(self):
         id = {'id': self.id}

@@ -72,37 +72,31 @@ class Population(object):
 
         return sorted_members
 
-    def advance_generation(self, n_elite, crossover_rate=0.5, n_arena=4):
+    def advance_generation(self, n_elite, crossover_rate=0.5, n_arena=4, mutation=0):
         new_generation = list()
 
-        # elitism
-        for member in self.elite(n_elite):
-            new_generation.append(member)
-
-        # parent
-        # for ind in range(0, n_crossover):
-            # self.roulette_crossover(new_generation)
-
-        while len(new_generation) < len(self.members):
+        while len(new_generation) < len(self.members) - n_elite:
             if n_arena > 0:
                 x, y = self.tournament_selection(n_arena, crossover_rate)
-            else:
-                x, y = self.roulette_crossover()
 
             new_generation.append(x)
             new_generation.append(y)
 
-        self.members = new_generation
+        # Remove excess members
+        while len(new_generation) > len(self.members) - n_elite:
+            new_generation.pop()
 
-        self.mutate(10)
+        for member in new_generation:
+            if rand.random() < mutation/100:
+                member.mutate()
+
+        # elitism
+        new_generation += self.elite(n_elite)
+
+        self.members = new_generation
 
     def remove_member(self, member):
         self.members.remove(member)
-
-    def roulette_crossover(self):
-        parent_one = self.roulette()
-        parent_two = self.roulette()
-        return parent_one.crossover(parent_two)
 
     def tournament_selection(self, arena_size, rate):
         parents = list()
