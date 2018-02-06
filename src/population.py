@@ -101,7 +101,8 @@ class Population(object):
     def tournament_selection(self, arena_size, rate):
         parents = list()
         for i in range(arena_size):
-            parents.append(self.members[rand.randint(0, len(self.members) - 1)])
+            parents.append(self.members[rand.randint(0,
+                                                     len(self.members) - 1)])
         parents = sorted(parents, key=lambda x: x.fitness(), reverse=True)
 
         if rand.random() < rate:
